@@ -1,5 +1,6 @@
 VERSION 5.00
 Object = "{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0"; "MSADODC.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form Form2 
    Caption         =   "Form2"
    ClientHeight    =   8460
@@ -10,6 +11,21 @@ Begin VB.Form Form2
    ScaleHeight     =   8460
    ScaleWidth      =   15870
    StartUpPosition =   3  'Windows Default
+   Begin VB.CommandButton Command7 
+      Caption         =   "foto"
+      Height          =   495
+      Left            =   5160
+      TabIndex        =   26
+      Top             =   6000
+      Width           =   1455
+   End
+   Begin MSComDlg.CommonDialog CommonDialog1 
+      Left            =   12480
+      Top             =   7920
+      _ExtentX        =   847
+      _ExtentY        =   847
+      _Version        =   393216
+   End
    Begin VB.CommandButton Command6 
       Caption         =   "MODIFICAR"
       Height          =   615
@@ -56,7 +72,7 @@ Begin VB.Form Form2
       Height          =   495
       Left            =   5160
       TabIndex        =   21
-      Top             =   6000
+      Top             =   6720
       Width           =   1455
    End
    Begin VB.CommandButton Command1 
@@ -119,7 +135,7 @@ Begin VB.Form Form2
       Orientation     =   0
       Enabled         =   -1
       Connect         =   $"Form2.frx":0000
-      OLEDBString     =   $"Form2.frx":009F
+      OLEDBString     =   $"Form2.frx":00A0
       OLEDBFile       =   ""
       DataSourceName  =   ""
       OtherAttributes =   ""
@@ -342,7 +358,7 @@ Begin VB.Form Form2
       DataSource      =   "Adodc1"
       Height          =   10260
       Left            =   0
-      Picture         =   "Form2.frx":013E
+      Picture         =   "Form2.frx":0140
       Stretch         =   -1  'True
       Top             =   0
       Width           =   15600
@@ -359,12 +375,9 @@ Adodc1.Recordset.MoveNext
  
  If Adodc1.Recordset.EOF Then
     Adodc1.Recordset.MoveFirst
-Image2.Picture = LoadPicture(X & "\" & Label11.Caption)
-X = App.Path
-      
     End If
-X = App.Path
- Image2.Picture = LoadPicture(X & "\" & Label11.Caption)
+    x = App.Path
+ Image2.Picture = LoadPicture(x & "\" & Label11.Caption)
     
   
     
@@ -377,8 +390,9 @@ Adodc1.Recordset.MovePrevious
  
  If Adodc1.Recordset.BOF Then
     Adodc1.Recordset.MoveLast
-    Image2.Picture = LoadPicture(X & "\" & Label11.Caption)
  End If
+ x = App.Path
+    Image2.Picture = LoadPicture(x & "\" & Label11.Caption)
  
 End Sub
 
@@ -390,24 +404,27 @@ Adodc1.Recordset.MoveFirst
 End Sub
 
 Private Sub Command4_Click()
-
-Adodc1.Recordset.MoveFirst
- ''' x = App.Path
- '''Image2.Picture = LoadPicture(x & "\" & Label11.Caption)
+ FileCopy CommonDialog1.FileName, App.Path & "\\" & CommonDialog1.FileTitle
+ Adodc1.Recordset.Update
+ Adodc1.Recordset.MoveFirst
+ x = App.Path
+ Image2.Picture = LoadPicture(x & "\" & Label11.Caption)
+ 
  Text1.Enabled = False
  Text2.Enabled = False
  Text3.Enabled = False
  Text4.Enabled = False
-Text5.Enabled = False
-Text6.Enabled = False
-Text7.Enabled = False
-Text8.Enabled = False
-Command4.Enabled = False
-Command1.Enabled = True
-Command2.Enabled = True
-Command3.Enabled = True
-Command6.Enabled = True
-
+ Text5.Enabled = False
+ Text6.Enabled = False
+ Text7.Enabled = False
+ Text8.Enabled = False
+ Command4.Enabled = False
+ Command1.Enabled = True
+ Command2.Enabled = True
+ Command3.Enabled = True
+ Command6.Enabled = True
+ Command7.Enabled = False
+ 
 End Sub
 
 Private Sub Command5_Click()
@@ -426,7 +443,12 @@ Command6.Enabled = False
 Command1.Enabled = False
 Command5.Enabled = False
 Command4.Enabled = True
+Command7.Enabled = True
 
+Text1.SetFocus
+
+Label11.Caption = ""
+Image2.Picture = LoadPicture(Label11.Caption)
 End Sub
 
 Private Sub Command6_Click()
@@ -443,9 +465,25 @@ Command1.Enabled = False
 
 End Sub
 
+Private Sub Command7_Click()
+    CommonDialog1.ShowOpen
+    Image2.Picture = LoadPicture(CommonDialog1.FileName)
+    Label11.Caption = CommonDialog1.FileTitle
+    
+    If Label11.Caption = "" Then
+        MsgBox ("debe seleccionar una imagen")
+    Else
+     Label11.Caption = CommonDialog1.FileTitle
+    End If
+    
+        
+    
+    
+End Sub
+
 Private Sub Form_Load()
- X = App.Path
- Image2.Picture = LoadPicture(X & "\" & Label11.Caption)
+ x = App.Path
+ Image2.Picture = LoadPicture(x & "\" & Label11.Caption)
  Text1.Enabled = False
  Text2.Enabled = False
  Text3.Enabled = False
@@ -455,6 +493,8 @@ Text6.Enabled = False
 Text7.Enabled = False
 Text8.Enabled = False
 Command4.Enabled = False
+Command7.Enabled = False
+                                
 Command1.Enabled = True
 Command2.Enabled = True
 Command3.Enabled = True
